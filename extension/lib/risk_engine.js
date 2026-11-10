@@ -27,7 +27,7 @@
     weights: { rules: 0.45, ml: 0.40, dom: 0.15 },
     mitreTechniques: {
       phishingLink: 'T1566.002: Spearphishing Link',
-      credentialHarvest: 'T1552: Unsecured Credentials',
+      credentialHarvest: 'T1056.003: Web Portal Capture',
       clickjacking: 'T1204.001: Malicious Link',
       homograph: 'T1566: Phishing (IDN Homograph)',
       generalPhish: 'T1566: Phishing'
@@ -89,7 +89,7 @@
 
     const joined = list.join(' ').toLowerCase();
 
-    // 1. Credential Harvesting (T1552)
+    // 1. Credential Harvesting (T1056.003: Web Portal Capture)
     if (
       joined.includes('submits to a different domain') ||
       joined.includes('embedded inside a hidden iframe') ||
@@ -177,7 +177,7 @@
         score: 0.0,
         tier: 'ALLOWLISTED',
         reasons: ['Site is in user-approved allowlist.'],
-        mitreTechnique: 'N/A (Allowlisted)',
+        mitreTechnique: null,
         isAllowlisted: true,
         signals: {
           ruleScore,
@@ -266,11 +266,66 @@
     };
   }
 
+  /**
+   * Compares two lists of reasons ignoring order.
+   */
+  function areReasonsEqual(reasonsA, reasonsB) {
+    const arrA = Array.isArray(reasonsA) ? reasonsA : [];
+    const arrB = Array.isArray(reasonsB) ? reasonsB : [];
+    if (arrA.length !== arrB.length) return false;
+    const sortedA = [...arrA].sort();
+    const sortedB = [...arrB].sort();
+    return sortedA.every((val, idx) => val === sortedB[idx]);
+  }
+
+  /**
+   * Checks whether a new audit entry is a duplicate of a recently recorded alert
+   * within a given time window (default: 5000ms / 5 seconds).
+   *
+   * Matches on: URL + tier + score + reasons within windowMs.
+   *
+   * @param {object} newEntry - Proposed decision record.
+   * @param {Array<object>} existingLog - Array of existing audit log entries.
+   * @param {number} [windowMs=5000] - Deduplication time window in milliseconds.
+   * @returns {boolean} True if newEntry is a duplicate, false otherwise.
+   */
+  function isDuplicateAlert(newEntry, existingLog, windowMs = 5000) {
+    if (!newEntry || !newEntry.url || !Array.isArray(existingLog) || existingLog.length === 0) {
+      return false;
+    }
+
+    const newTime = new Date(newEntry.timestamp || Date.now()).getTime();
+    if (isNaN(newTime)) return false;
+
+    for (let i = existingLog.length - 1; i >= 0; i--) {
+      const existing = existingLog[i];
+      if (!existing || !existing.timestamp) continue;
+
+      const existingTime = new Date(existing.timestamp).getTime();
+      if (isNaN(existingTime)) continue;
+
+      const timeDiff = Math.abs(newTime - existingTime);
+      if (timeDiff <= windowMs) {
+        if (
+          existing.url === newEntry.url &&
+          existing.tier === newEntry.tier &&
+          Math.abs(Number(existing.score) - Number(newEntry.score)) < 0.001 &&
+          areReasonsEqual(existing.reasons, newEntry.reasons)
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
   return {
     isAllowlisted,
     isHttpOrHttps,
     evaluateRisk,
     resolveMitreTechnique,
+    isDuplicateAlert,
     DEFAULT_CONFIG: cfg
   };
 });

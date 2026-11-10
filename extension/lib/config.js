@@ -34,7 +34,7 @@
     // MITRE ATT&CK Technique Mapping (Phishing & Credential Theft only)
     mitreTechniques: {
       phishingLink: 'T1566.002: Spearphishing Link',
-      credentialHarvest: 'T1552: Unsecured Credentials',
+      credentialHarvest: 'T1056.003: Web Portal Capture',
       clickjacking: 'T1204.001: Malicious Link',
       homograph: 'T1566: Phishing (IDN Homograph)',
       generalPhish: 'T1566: Phishing'

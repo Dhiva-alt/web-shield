@@ -37,9 +37,13 @@ const HEADER_FINDINGS_KEY = 'headerFindings';
 const DOM_FINDINGS_KEY = 'domFindings';
 const CONFIG_OVERRIDE_KEY = 'customConfig';
 const MAX_AUDIT_LOG = 500;
+const AUDIT_DEDUPE_WINDOW_MS = 5000;
 
 // Track recent evaluations per tab to avoid double-scoring between onBeforeNavigate and onCommitted
 const recentEvaluations = new Map();
+
+// In-memory cache of recent audit decisions to prevent race conditions during concurrent events
+const recentAuditCache = [];
 
 // Cached in-memory model representation for instant navigation checks
 let cachedModel = null;
@@ -72,15 +76,43 @@ function isHttpOrHttps(url) {
 }
 
 /**
- * Appends a decision record to the audit log in chrome.storage.local (capped at 500).
+ * Appends a decision record to the audit log in chrome.storage.local (capped at 500),
+ * deduplicating entries on URL + tier + score + reasons within a 5-second window.
  */
 async function recordAuditEntry(entry) {
   if (!entry || !entry.url || !isHttpOrHttps(entry.url)) {
     return;
   }
+
+  // 1. Check in-memory recent cache to prevent race conditions on concurrent events
+  if (typeof WebShieldRiskEngine !== 'undefined' && WebShieldRiskEngine.isDuplicateAlert) {
+    if (WebShieldRiskEngine.isDuplicateAlert(entry, recentAuditCache, AUDIT_DEDUPE_WINDOW_MS)) {
+      return;
+    }
+  }
+
+  // Record into in-memory cache and prune entries older than 10 seconds
+  recentAuditCache.push(entry);
+  const now = Date.now();
+  while (recentAuditCache.length > 0) {
+    const headTime = new Date(recentAuditCache[0].timestamp).getTime();
+    if (now - headTime > 10000) {
+      recentAuditCache.shift();
+    } else {
+      break;
+    }
+  }
+
   try {
     const data = await chrome.storage.local.get({ [AUDIT_LOG_KEY]: [] });
     const log = Array.isArray(data[AUDIT_LOG_KEY]) ? data[AUDIT_LOG_KEY] : [];
+
+    // 2. Check storage log to deduplicate against persisted records
+    if (typeof WebShieldRiskEngine !== 'undefined' && WebShieldRiskEngine.isDuplicateAlert) {
+      if (WebShieldRiskEngine.isDuplicateAlert(entry, log, AUDIT_DEDUPE_WINDOW_MS)) {
+        return;
+      }
+    }
 
     log.push(entry);
     const trimmed = log.slice(-MAX_AUDIT_LOG);
@@ -193,7 +225,8 @@ async function processNavigation(tabId, rawUrl) {
       score: risk.score,
       tier: risk.tier,
       reasons: risk.reasons,
-      mitreTechnique: risk.mitreTechnique,
+      mitre: risk.mitreTechnique || null,
+      mitreTechnique: risk.mitreTechnique || null,
       signals: risk.signals
     };
     await recordAuditEntry(decisionRecord);

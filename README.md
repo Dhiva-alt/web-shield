@@ -72,7 +72,7 @@ flowchart TD
 | **Brand Impersonation / Typosquatting** | Brand keywords (`paypal`, `login`, `bank`, etc.) in subdomains or path | **[T1566.002: Spearphishing Link](https://attack.mitre.org/techniques/T1566/002/)** | HIGH |
 | **Punycode / Homograph Deception** | Internationalized Domain Name (IDN) `xn--` lookalikes | **[T1566: Phishing](https://attack.mitre.org/techniques/T1566/)** | HIGH |
 | **Raw IP Host Usage** | Direct IPv4/IPv6 address used in place of domain name | **[T1566.002: Spearphishing Link](https://attack.mitre.org/techniques/T1566/002/)** | HIGH |
-| **Cross-Domain Password Harvesting** | Form action submits credentials to external registrable domain | **[T1552: Unsecured Credentials](https://attack.mitre.org/techniques/T1552/)** | HIGH |
+| **Cross-Domain Password Harvesting** | Form action submits credentials to external registrable domain | **[T1056.003: Web Portal Capture](https://attack.mitre.org/techniques/T1056/003/)** | HIGH |
 | **Hidden Iframe / Clickjacking** | Zero-dimension or styled hidden frames embedding forms | **[T1204.001: Malicious Link](https://attack.mitre.org/techniques/T1204/001/)** | HIGH |
 | **Unencrypted Credential Input** | Password fields loaded over plain HTTP connections | *None (Transport Hygiene)* | MEDIUM |
 | **Suspicious Disposable TLDs** | High-abuse TLDs (`.xyz`, `.top`, `.click`, `.tk`, etc.) | **[T1566.002: Spearphishing Link](https://attack.mitre.org/techniques/T1566/002/)** | MEDIUM |

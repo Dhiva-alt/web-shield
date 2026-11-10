@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderCurrentSite({
       score: 0.0,
       tier: 'ALLOWLISTED',
-      mitreTechnique: 'N/A (Allowlisted)',
+      mitreTechnique: null,
       reasons: ['Domain is present in your trusted allowlist.']
     });
   } else if (currentRecord) {
@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderCurrentSite({
       score: 0.0,
       tier: 'LOW',
-      mitreTechnique: 'None detected',
+      mitreTechnique: null,
       reasons: ['No suspicious indicators detected on this origin.']
     });
   }
@@ -148,7 +148,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const scorePct = Math.round((record.score || 0) * 100);
     riskScoreEl.textContent = `${scorePct}%`;
     tierLabelEl.textContent = `Tier: ${record.tier}`;
-    mitreTagEl.textContent = `MITRE: ${record.mitreTechnique || 'None'}`;
+
+    if (record.mitreTechnique) {
+      mitreTagEl.style.display = 'inline-block';
+      mitreTagEl.textContent = `MITRE: ${record.mitreTechnique}`;
+    } else {
+      mitreTagEl.style.display = 'none';
+      mitreTagEl.textContent = '';
+    }
 
     statusBadge.textContent = record.tier;
     statusBadge.className = 'badge';
@@ -186,12 +193,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // 5. Render Last 10 Alerts
-  alertsCounter.textContent = String(auditLog.length);
+  // 5. Render Last 10 Alerts (excluding allowlisted visits)
+  const alertEntries = auditLog.filter(entry => entry.tier !== 'ALLOWLISTED');
+  alertsCounter.textContent = String(alertEntries.length);
 
-  if (auditLog.length > 0) {
+  if (alertEntries.length > 0) {
     alertsListEl.innerHTML = '';
-    const last10 = auditLog.slice(-10).reverse();
+    const last10 = alertEntries.slice(-10).reverse();
 
     last10.forEach(entry => {
       const li = document.createElement('li');
@@ -201,13 +209,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       const scorePct = Math.round((entry.score || 0) * 100);
       const tierColor = getTierColor(entry.tier);
 
+      const mitreVal = entry.mitreTechnique || entry.mitre;
+      const mitreHtml = mitreVal
+        ? `<div class="alert-mitre">${escapeHtml(mitreVal)}</div>`
+        : '';
+
       li.innerHTML = `
         <div class="alert-top">
           <span class="alert-tier" style="color: ${tierColor};">[${escapeHtml(entry.tier)}] ${scorePct}%</span>
           <span class="alert-time">${timeStr}</span>
         </div>
         <div class="alert-url" title="${escapeHtml(entry.url)}">${escapeHtml(entry.url)}</div>
-        <div class="alert-mitre">${escapeHtml(entry.mitreTechnique || 'T1566: Phishing')}</div>
+        ${mitreHtml}
       `;
       alertsListEl.appendChild(li);
     });
@@ -215,20 +228,23 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 6. Export Alerts as JSON Lines (.jsonl) for SIEM (Wazuh / Splunk)
   btnExport.addEventListener('click', () => {
-    if (auditLog.length === 0) {
+    // Exclude allowlisted visits from export
+    const exportableLog = auditLog.filter(entry => entry.tier !== 'ALLOWLISTED');
+
+    if (exportableLog.length === 0) {
       alert('No alerts logged yet to export.');
       return;
     }
 
     // Convert each alert to a clean JSON Line
-    const lines = auditLog.map(entry => {
+    const lines = exportableLog.map(entry => {
       const exportRecord = {
         timestamp: entry.timestamp,
         url: entry.url,
         score: entry.score,
         tier: entry.tier,
         reasons: entry.reasons || [],
-        mitre: entry.mitreTechnique || 'T1566: Phishing'
+        mitre: entry.mitreTechnique || entry.mitre || null
       };
       return JSON.stringify(exportRecord);
     });

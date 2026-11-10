@@ -96,7 +96,7 @@ runTest('Cross-domain password submission immediately triggers HIGH tier', () =>
   });
 
   assert.strictEqual(result.tier, 'HIGH');
-  assert.strictEqual(result.mitreTechnique, 'T1552: Unsecured Credentials');
+  assert.strictEqual(result.mitreTechnique, 'T1056.003: Web Portal Capture');
 });
 
 // 5. User Allowlist Bypass
@@ -113,6 +113,7 @@ runTest('User allowlist overrides high-risk signals to ALLOWLISTED tier', () => 
   assert.strictEqual(result.tier, 'ALLOWLISTED');
   assert.strictEqual(result.score, 0.0);
   assert.strictEqual(result.isAllowlisted, true);
+  assert.strictEqual(result.mitreTechnique, null, 'Allowlisted visit must have mitreTechnique = null');
 });
 
 // 6. MITRE Technique Resolution Checks
@@ -229,12 +230,12 @@ runTest('Item 5: Shows MITRE technique ONLY for phishing or credential theft (hy
   });
   assert.strictEqual(evalHygieneOnly.mitreTechnique, null, 'Hygiene-only eval should have null MITRE tag');
 
-  // D. Credential theft -> T1552
+  // D. Credential theft -> T1056.003
   const credTheft = riskEngine.resolveMitreTechnique(
     [],
     ['Password form action submits to a different domain (evil.com)']
   );
-  assert.strictEqual(credTheft, 'T1552: Unsecured Credentials');
+  assert.strictEqual(credTheft, 'T1056.003: Web Portal Capture');
 
   // E. Phishing indicators -> T1566 / T1566.002
   const phishLink = riskEngine.resolveMitreTechnique(
@@ -245,6 +246,123 @@ runTest('Item 5: Shows MITRE technique ONLY for phishing or credential theft (hy
 
   // F. Confirm T1040 is not in config
   assert.strictEqual(config.mitreTechniques.insecureTransport, undefined);
+});
+
+// Bug 10: Deduplication on URL + tier + score + reasons within 5 seconds
+runTest('Bug 10: Deduplicates alert on URL + tier + score + reasons within 5-second window', () => {
+  const baseTimestamp = new Date('2026-11-10T12:00:00.000Z').toISOString();
+  const alertEntry = {
+    timestamp: baseTimestamp,
+    url: 'http://localhost:8080/tests/pages/cross_origin_form.html',
+    tier: 'HIGH',
+    score: 0.70,
+    reasons: [
+      'Override: Cross-domain password submission detected (forces HIGH risk tier)',
+      '[DOM] Password form action submits to a different domain (attacker-harvest.example.org) than current page (localhost)'
+    ]
+  };
+
+  const existingLog = [alertEntry];
+
+  // 1. Identical alert with same timestamp (0 ms difference) -> DUPLICATE
+  const exactDuplicate = {
+    ...alertEntry,
+    timestamp: baseTimestamp
+  };
+  assert.strictEqual(
+    riskEngine.isDuplicateAlert(exactDuplicate, existingLog, 5000),
+    true,
+    'Identical alert with same timestamp should be detected as duplicate'
+  );
+
+  // 2. Identical alert 2000 ms later (within 5s window) -> DUPLICATE
+  const nearDuplicate = {
+    ...alertEntry,
+    timestamp: new Date('2026-11-10T12:00:02.000Z').toISOString()
+  };
+  assert.strictEqual(
+    riskEngine.isDuplicateAlert(nearDuplicate, existingLog, 5000),
+    true,
+    'Identical alert 2 seconds later should be detected as duplicate'
+  );
+
+  // 3. Same alert with reasons in reversed order within 5s window -> DUPLICATE
+  const reversedReasonsDuplicate = {
+    ...alertEntry,
+    timestamp: new Date('2026-11-10T12:00:01.500Z').toISOString(),
+    reasons: [
+      '[DOM] Password form action submits to a different domain (attacker-harvest.example.org) than current page (localhost)',
+      'Override: Cross-domain password submission detected (forces HIGH risk tier)'
+    ]
+  };
+  assert.strictEqual(
+    riskEngine.isDuplicateAlert(reversedReasonsDuplicate, existingLog, 5000),
+    true,
+    'Alert with same reasons in different order should be detected as duplicate'
+  );
+
+  // 4. Identical alert 6000 ms later (outside 5s window) -> NOT duplicate
+  const outsideWindowAlert = {
+    ...alertEntry,
+    timestamp: new Date('2026-11-10T12:00:06.000Z').toISOString()
+  };
+  assert.strictEqual(
+    riskEngine.isDuplicateAlert(outsideWindowAlert, existingLog, 5000),
+    false,
+    'Alert 6 seconds later should NOT be detected as duplicate'
+  );
+
+  // 5. Different URL within 5s window -> NOT duplicate
+  const differentUrlAlert = {
+    ...alertEntry,
+    url: 'http://localhost:8080/tests/pages/other_form.html',
+    timestamp: new Date('2026-11-10T12:00:01.000Z').toISOString()
+  };
+  assert.strictEqual(
+    riskEngine.isDuplicateAlert(differentUrlAlert, existingLog, 5000),
+    false,
+    'Alert with different URL should NOT be detected as duplicate'
+  );
+
+  // 6. Different tier within 5s window -> NOT duplicate
+  const differentTierAlert = {
+    ...alertEntry,
+    tier: 'LOW',
+    timestamp: new Date('2026-11-10T12:00:01.000Z').toISOString()
+  };
+  assert.strictEqual(
+    riskEngine.isDuplicateAlert(differentTierAlert, existingLog, 5000),
+    false,
+    'Alert with different tier should NOT be detected as duplicate'
+  );
+
+  // 7. Different score within 5s window -> NOT duplicate
+  const differentScoreAlert = {
+    ...alertEntry,
+    score: 0.06,
+    timestamp: new Date('2026-11-10T12:00:01.000Z').toISOString()
+  };
+  assert.strictEqual(
+    riskEngine.isDuplicateAlert(differentScoreAlert, existingLog, 5000),
+    false,
+    'Alert with different score should NOT be detected as duplicate'
+  );
+
+  // 8. Different reasons within 5s window -> NOT duplicate
+  const differentReasonsAlert = {
+    ...alertEntry,
+    reasons: ['Different reason'],
+    timestamp: new Date('2026-11-10T12:00:01.000Z').toISOString()
+  };
+  assert.strictEqual(
+    riskEngine.isDuplicateAlert(differentReasonsAlert, existingLog, 5000),
+    false,
+    'Alert with different reasons should NOT be detected as duplicate'
+  );
+
+  // 9. Empty log or invalid input -> NOT duplicate
+  assert.strictEqual(riskEngine.isDuplicateAlert(alertEntry, [], 5000), false);
+  assert.strictEqual(riskEngine.isDuplicateAlert(null, existingLog, 5000), false);
 });
 
 console.log('\n============================================================');
