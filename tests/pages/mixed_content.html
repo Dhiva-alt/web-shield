@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Page: Mixed Content Simulation</title>
+  <style>
+    body { font-family: sans-serif; margin: 40px; background: #fffbeb; color: #451a03; }
+    .box { background: white; padding: 24px; border-radius: 8px; max-width: 520px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .badge { background: #fde68a; color: #92400e; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+    .warning { color: #b45309; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <span class="badge">Defensive Test Scenario</span>
+    <h2>Mixed Content Simulation</h2>
+    <p>When viewed in a secure context (HTTPS), references to unencrypted <code>http://</code> resources create passive or active mixed content vulnerabilities.</p>
+    <p class="warning">Note: On <code>http://localhost</code>, browsers treat the origin as secure or allow mixed references, but WebShield's DOM scanner specifically inspects and flags cleartext resource URLs.</p>
+
+    <!-- Simulated Insecure Resources -->
+    <img src="http://example.com/insecure_tracker_logo.png" alt="Insecure image resource" width="80" height="20">
+    <iframe src="http://example.com/insecure_embedded_banner.html" width="200" height="40" title="Insecure frame resource"></iframe>
+  </div>
+</body>
+</html>

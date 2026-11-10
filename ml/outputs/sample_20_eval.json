@@ -1,0 +1,422 @@
+[
+  {
+    "url": "torys.com/OurExpertise/TransactionsandCases/Pages/QuadGraphicstoacquireWorldcolorforC$1.3billion.aspx",
+    "actual_label": 0,
+    "python_probability": 0.3119,
+    "feature_vector": [
+      101.0,
+      9.0,
+      3.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0198,
+      8.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      4.0
+    ]
+  },
+  {
+    "url": "www.cnhedge.cn/js/index.htm?us.battle.net/login/en/?ref=nvwmlrbus.battle.net/d3/en/index&amp;app=com-d3",
+    "actual_label": 1,
+    "python_probability": 0.9923,
+    "feature_vector": [
+      103.0,
+      14.0,
+      7.0,
+      1.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0194,
+      22.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      2.0
+    ]
+  },
+  {
+    "url": "u16018424.onlinehome-server.com/norkdk/",
+    "actual_label": 1,
+    "python_probability": 0.1734,
+    "feature_vector": [
+      39.0,
+      31.0,
+      2.0,
+      1.0,
+      1.0,
+      0.0,
+      0.0,
+      0.2051,
+      5.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  },
+  {
+    "url": "debtnegotiators.com.au/",
+    "actual_label": 0,
+    "python_probability": 0.1627,
+    "feature_vector": [
+      23.0,
+      22.0,
+      2.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      3.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "url": "amazon.com/808s-Heartbreak/dp/B001L99XQQ",
+    "actual_label": 0,
+    "python_probability": 0.1412,
+    "feature_vector": [
+      40.0,
+      10.0,
+      1.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.2,
+      5.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      3.0
+    ]
+  },
+  {
+    "url": "acmetattoocompany.com/",
+    "actual_label": 0,
+    "python_probability": 0.1559,
+    "feature_vector": [
+      22.0,
+      21.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      2.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "url": "kramarzanna.republika.pl/trregrq",
+    "actual_label": 1,
+    "python_probability": 0.1693,
+    "feature_vector": [
+      32.0,
+      24.0,
+      2.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      3.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  },
+  {
+    "url": "en.wikipedia.org/wiki/Category:Heirs_presumptive_to_the_French_throne",
+    "actual_label": 0,
+    "python_probability": 0.1396,
+    "feature_vector": [
+      69.0,
+      16.0,
+      2.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      10.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      2.0
+    ]
+  },
+  {
+    "url": "rishtapoint.com/aol/",
+    "actual_label": 1,
+    "python_probability": 0.1966,
+    "feature_vector": [
+      20.0,
+      15.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      3.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  },
+  {
+    "url": "spinsinergi.com/pay/",
+    "actual_label": 1,
+    "python_probability": 0.1966,
+    "feature_vector": [
+      20.0,
+      15.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      3.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  },
+  {
+    "url": "paypal-com.us.webscrlcmdl.login.submit.dispatch.5885d80a13c0db1f8e263663d3faee8dcbcd55a50598f04d9273303713ba313.5885d80a13c0db1f8e263663d3f.aee811d01j111yh0111isl153364wxekhteamindexfo100011sa.ahbabarab.com/fr/fr/paypal/online/information/update/Service/12fca96f6d92dafbac17cde7967cf3db/webscr.php?cmd=_login-run&dispatch=5885d80a13c0db1f1ff80d546411d7f8a8350c132bc41e0934cfc023d4e8f9e5",
+    "actual_label": 1,
+    "python_probability": 0.9994,
+    "feature_vector": [
+      386.0,
+      206.0,
+      11.0,
+      9.0,
+      2.0,
+      0.0,
+      0.0,
+      0.3575,
+      27.0,
+      0.0,
+      0.0,
+      0.0,
+      2.0,
+      9.0
+    ]
+  },
+  {
+    "url": "www.paulgraham.com/acl.html",
+    "actual_label": 0,
+    "python_probability": 0.1778,
+    "feature_vector": [
+      27.0,
+      18.0,
+      3.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      4.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  },
+  {
+    "url": "amazon.com/Heavens-Above-Peter-Sellers/dp/B00007AJE7",
+    "actual_label": 0,
+    "python_probability": 0.0456,
+    "feature_vector": [
+      52.0,
+      10.0,
+      1.0,
+      0.0,
+      3.0,
+      0.0,
+      0.0,
+      0.1154,
+      7.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      3.0
+    ]
+  },
+  {
+    "url": "ams1.ib.adnxs.com/if?enc=m5mZmZmZuT80MzMzMzOzPxsv3SQGgcU_NDMzMzMzsz-amZmZmZm5P1DDo3POOgZ0A_yJrhEioyY3Y2pTAAAAACWfJQAdAgAAawYAAAIAAADJReYAD1YFAAAAAQBVU0QAVVNEANgCWgBLIwAAJdMAAgUAAQIAAI4AWCGHtQAAAAA.&cnd=%21IiZuCAjrkOsBEMmLmQcYACCPrBUwADgAQABI6wxQpb6WAVgAYLsDaABwAHgAgAEAiAEAkAEBmAEBoAEBqAEDsAEAuQGamZmZmZm5P8EBmpmZmZmZuT_JAZlTxnmZ9v8_2QEAAAAAAADwP-ABAPUBAACAPg..&ccd=%21_AUgOwjrkOsBEMmLmQcYj6wVIAA.&udj=uf%28%27a%27%2C+129071%2C+1399481143%29%3Buf%28%27c%27%2C+3852395%2C+1399481143%29%3Buf%28%27r%27%2C+15091145%2C+1399481143%29%3B&vpid=45&apid=240647&referrer=amazinglytimedphotos.com&media_subtypes=1&ct=0&dlo=1",
+    "actual_label": 1,
+    "python_probability": 0.8943,
+    "feature_vector": [
+      613.0,
+      17.0,
+      8.0,
+      2.0,
+      2.0,
+      0.0,
+      0.0,
+      0.1974,
+      66.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  },
+  {
+    "url": "youtube.com/watch?v=E712X7RsGHw",
+    "actual_label": 0,
+    "python_probability": 0.1446,
+    "feature_vector": [
+      31.0,
+      11.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.129,
+      4.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  },
+  {
+    "url": "'home.comcast.net/~lucinda.peterson/?login=doneSuccesswarrning9&amp;&amp;us.mg5.mail.yahoo.com/neo/launch?.rand=cdpm5tab2p8q5\\%20home.comcast.net/~lucinda.peterson/?login=doneSuccesswarrning9&amp;&amp;us.mg5.mail.yahoo.com/neo/launch?.rand=cdpm5tab2p8q5\\%20home.comcast.net/favicon.ico\\%20citgroup.vn/.login/yahoo/index.php?login=doneSuccesswarrning9&amp;&amp;us.mg5.mail.yahoo.com/neo/launch?.rand=cdpm5tab2p8q5\\%20home.comcast.net/site/error/error_404.html\\%20citgroup.vn/.login/yahoo/favicon.ico\\%20citgroup.vn/.login/yahoo/index.php?login=doneSuccesswarrning9'",
+    "actual_label": 1,
+    "python_probability": 0.9937,
+    "feature_vector": [
+      564.0,
+      17.0,
+      36.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0603,
+      96.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0
+    ]
+  },
+  {
+    "url": "chickenhouseapparel.com/",
+    "actual_label": 0,
+    "python_probability": 0.1582,
+    "feature_vector": [
+      24.0,
+      23.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      2.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "url": "geninmun.com/srbe/srbe.php",
+    "actual_label": 1,
+    "python_probability": 0.1455,
+    "feature_vector": [
+      26.0,
+      12.0,
+      2.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      4.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      2.0
+    ]
+  },
+  {
+    "url": "techdryindia.com/ours/cc/home/",
+    "actual_label": 1,
+    "python_probability": 0.1521,
+    "feature_vector": [
+      30.0,
+      16.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      5.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      3.0
+    ]
+  },
+  {
+    "url": "espn.go.com/mens-college-basketball/team/stats/_/id/2473/oakland-golden-grizzlies",
+    "actual_label": 0,
+    "python_probability": 0.0817,
+    "feature_vector": [
+      81.0,
+      11.0,
+      2.0,
+      1.0,
+      4.0,
+      0.0,
+      0.0,
+      0.0494,
+      14.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      7.0
+    ]
+  }
+]

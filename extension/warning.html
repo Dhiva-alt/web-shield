@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebShield - Warning: High Risk Site Blocked</title>
+  <link rel="stylesheet" href="warning.css">
+</head>
+<body>
+  <div class="warning-wrapper">
+    <div class="card warning-card">
+      <div class="header">
+        <div class="shield-icon">&#9888;</div>
+        <div class="header-text">
+          <h1>Security Warning: High Risk Destination</h1>
+          <p class="subtitle">WebShield blocked navigation to this website due to high phishing/deceptive indicators.</p>
+        </div>
+      </div>
+
+      <div class="details-section">
+        <div class="meta-row">
+          <span class="meta-label">Blocked URL:</span>
+          <span class="meta-value url-text" id="blocked-url">Loading...</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Risk Assessment:</span>
+          <span class="meta-value">
+            <span class="badge badge-high" id="risk-score-badge">Score: -- / 1.0</span>
+            <span class="badge badge-mitre" id="mitre-badge">MITRE: T1566</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="reasons-box">
+        <h3>Detected Security Indicators:</h3>
+        <ul id="reasons-list">
+          <li>Evaluating risks...</li>
+        </ul>
+      </div>
+
+      <div class="actions">
+        <button id="btn-back" class="btn btn-primary">&larr; Go Back (Recommended)</button>
+        <button id="btn-allowlist" class="btn btn-secondary">Always Allow This Domain</button>
+        <button id="btn-proceed" class="btn btn-danger">Proceed Anyway (Unsafe)</button>
+      </div>
+
+      <div class="footer">
+        <span>Protected locally by <strong>WebShield</strong> &bull; Zero Remote Tracking</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="warning.js"></script>
+</body>
+</html>

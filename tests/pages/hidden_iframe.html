@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Page: Hidden Iframes & Embedded Password Form</title>
+  <style>
+    body { font-family: sans-serif; margin: 40px; background: #f8fafc; color: #1e293b; }
+    .box { background: white; padding: 24px; border-radius: 8px; max-width: 520px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .badge { background: #e2e8f0; color: #334155; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+    .info { margin-top: 12px; font-size: 14px; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <span class="badge">Defensive Test Scenario</span>
+    <h2>Hidden Iframe & Overlay Simulation</h2>
+    <p class="info">This page contains two simulated hidden iframes often used in stealth tracking, drive-by probing, or hidden credential harvest overlays:</p>
+    <ul>
+      <li>An invisible iframe styled with <code>display: none</code>.</li>
+      <li>A zero-dimension iframe (<code>width: 0; height: 0;</code>) loading an embedded password form (<code>iframe_password.html</code>).</li>
+    </ul>
+
+    <!-- 1. Explicitly hidden iframe -->
+    <iframe src="about:blank" style="display: none;" title="Hidden tracker simulation"></iframe>
+
+    <!-- 2. Zero-dimension iframe embedding a password form -->
+    <iframe src="iframe_password.html" style="width: 0; height: 0; border: 0; opacity: 0;" title="Hidden credential form simulation"></iframe>
+  </div>
+</body>
+</html>

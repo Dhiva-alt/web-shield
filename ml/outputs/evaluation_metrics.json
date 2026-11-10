@@ -1,0 +1,69 @@
+{
+  "dataset_sample_size": 50000,
+  "train_rows": 40000,
+  "test_rows": 10000,
+  "model_file_size_kb": 116.87,
+  "leakage_audit": {
+    "exact_url_overlap_count": 0,
+    "train_unique_domains": 23443,
+    "test_unique_domains": 6830,
+    "domain_overlap_count": 1815,
+    "domain_overlap_pct_of_test": 26.57,
+    "suspicious_single_features": []
+  },
+  "logistic_regression": {
+    "training_time_seconds": 3.05,
+    "accuracy": 0.859,
+    "precision": 0.9314,
+    "recall": 0.4039,
+    "f1": 0.5635,
+    "confusion_matrix": [
+      [
+        7680,
+        67
+      ],
+      [
+        1343,
+        910
+      ]
+    ]
+  },
+  "random_forest": {
+    "hyperparameters": {
+      "n_estimators": 30,
+      "max_depth": 8,
+      "seed": 42
+    },
+    "training_time_seconds": 0.57,
+    "accuracy": 0.8626,
+    "precision": 0.9426,
+    "recall": 0.4154,
+    "f1": 0.5767,
+    "confusion_matrix": [
+      [
+        7690,
+        57
+      ],
+      [
+        1317,
+        936
+      ]
+    ],
+    "feature_importances": {
+      "brandKeywordsCount": 0.3136,
+      "dotCount": 0.1891,
+      "urlLength": 0.1147,
+      "digitRatio": 0.0811,
+      "hyphenCount": 0.059,
+      "subdomainCount": 0.0479,
+      "hostnameLength": 0.0457,
+      "specialCharCount": 0.0429,
+      "isIpAddress": 0.0416,
+      "pathDepth": 0.0347,
+      "suspiciousTld": 0.0254,
+      "hasAtSymbol": 0.0039,
+      "hasPunycodeOrNonAscii": 0.0004,
+      "isHttps": 0.0
+    }
+  }
+}

@@ -1,0 +1,5 @@
+# Minimal lightweight dependencies for local offline model training
+# Memory-conscious footprint suitable for ~6 GB RAM environments
+numpy>=1.24.0
+scikit-learn>=1.3.0
+pandas>=2.0.0

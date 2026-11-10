@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebShield Status</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-group">
+        <span class="logo-shield">&#128737;</span>
+        <span class="logo-text">WebShield</span>
+      </div>
+      <span class="badge" id="status-badge">MONITORING</span>
+    </header>
+
+    <main class="main-content">
+      <!-- Current Site Section -->
+      <section class="card site-card">
+        <div class="site-header">
+          <span class="section-title">Current Site</span>
+          <button id="btn-allowlist" class="btn-allowlist" title="Toggle allowlist for this origin">+ Allowlist Domain</button>
+        </div>
+        <div class="url-display" id="active-url">Checking active page...</div>
+        <div class="score-row">
+          <div class="score-display">
+            <span class="score-num" id="risk-score">0%</span>
+            <span class="score-caption">Risk Score</span>
+          </div>
+          <div class="tier-display">
+            <span class="tier-title" id="tier-label">Tier: LOW</span>
+            <span class="mitre-tag" id="mitre-tag">MITRE: None</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Detection Reasons Section -->
+      <section class="card reasons-card">
+        <span class="section-title">Detection Findings</span>
+        <ul class="reasons-list" id="reasons-list">
+          <li class="reason-empty">No security anomalies detected on this origin.</li>
+        </ul>
+      </section>
+
+      <!-- Last 10 Alerts & SIEM Export Section -->
+      <section class="card alerts-card">
+        <div class="alerts-header">
+          <div class="alerts-title-group">
+            <span class="section-title">Last 10 Alerts</span>
+            <span class="badge-counter" id="alerts-counter">0</span>
+          </div>
+          <button id="btn-export" class="btn-export" title="Download NDJSON/JSONL export for Wazuh or Splunk">
+            &#128190; Export Alerts (.jsonl)
+          </button>
+        </div>
+        <div class="alerts-container">
+          <ul class="alerts-list" id="alerts-list">
+            <li class="alert-empty">No alerts recorded in the audit log yet.</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <span>100% Local &bull; SIEM-Ready (.jsonl) &bull; Zero External Telemetry</span>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

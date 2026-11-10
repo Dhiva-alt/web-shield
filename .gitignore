@@ -1,0 +1,38 @@
+# Environment and local configs
+.env
+.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+env/
+venv/
+ENV/
+
+# Machine Learning Data & Datasets
+ml/data/*
+!ml/data/.gitkeep
+*.csv
+*.parquet
+*.sqlite3
+*.db
+
+# Node / JS dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE & Editor artifacts
+.vscode/
+.idea/
+*.swp
+*.swo
