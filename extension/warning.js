@@ -8,51 +8,93 @@
  * - Add to Allowlist action.
  */
 
-document.addEventListener('DOMContentLoaded', async () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const targetUrl = urlParams.get('url') || '';
+/**
+ * Retrieves the latest decision record for a target URL from the audit log.
+ * Shared source of truth between popup.js and warning.js.
+ */
+function getLatestWarningRecord(auditLog, targetUrl) {
+  if (!Array.isArray(auditLog) || auditLog.length === 0) return null;
+  const reversed = auditLog.slice().reverse();
+  if (!targetUrl) return reversed[0] || null;
 
-  const blockedUrlEl = document.getElementById('blocked-url');
-  const scoreBadgeEl = document.getElementById('risk-score-badge');
-  const mitreBadgeEl = document.getElementById('mitre-badge');
-  const reasonsListEl = document.getElementById('reasons-list');
-  const btnBack = document.getElementById('btn-back');
-  const btnProceed = document.getElementById('btn-proceed');
-  const btnAllowlist = document.getElementById('btn-allowlist');
+  return reversed.find(item => item.url === targetUrl) ||
+         reversed.find(item => item.url && item.url.replace(/\/$/, '') === targetUrl.replace(/\/$/, '')) ||
+         reversed[0] ||
+         null;
+}
 
-  blockedUrlEl.textContent = targetUrl || 'Unknown URL';
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetUrl = urlParams.get('url') || '';
 
-  let targetHostname = '';
-  try {
-    targetHostname = new URL(targetUrl).hostname;
-  } catch {
-    targetHostname = targetUrl;
-  }
+    const blockedUrlEl = document.getElementById('blocked-url');
+    const scoreBadgeEl = document.getElementById('risk-score-badge');
+    const mitreBadgeEl = document.getElementById('mitre-badge');
+    const reasonsListEl = document.getElementById('reasons-list');
+    const btnBack = document.getElementById('btn-back');
+    const btnProceed = document.getElementById('btn-proceed');
+    const btnAllowlist = document.getElementById('btn-allowlist');
 
-  // Load latest audit record for this URL from local storage
-  try {
-    const data = await chrome.storage.local.get({ auditLog: [] });
-    const log = Array.isArray(data.auditLog) ? data.auditLog : [];
-    const matchingRecord = log.find(item => item.url === targetUrl) || log[log.length - 1];
+    blockedUrlEl.textContent = targetUrl || 'Unknown URL';
 
-    if (matchingRecord) {
-      scoreBadgeEl.textContent = `Score: ${(matchingRecord.score * 100).toFixed(0)}% (HIGH RISK)`;
-      if (matchingRecord.mitreTechnique) {
-        mitreBadgeEl.textContent = `MITRE: ${matchingRecord.mitreTechnique}`;
-      }
+    let targetHostname = '';
+    try {
+      targetHostname = new URL(targetUrl).hostname;
+    } catch {
+      targetHostname = targetUrl;
+    }
 
-      if (Array.isArray(matchingRecord.reasons) && matchingRecord.reasons.length > 0) {
-        reasonsListEl.innerHTML = '';
-        matchingRecord.reasons.forEach(reason => {
-          const li = document.createElement('li');
-          li.textContent = reason;
-          reasonsListEl.appendChild(li);
-        });
+    // Load and render latest audit record for this URL from local storage
+    async function loadAndRenderRecord() {
+      try {
+        const data = await chrome.storage.local.get({ auditLog: [] });
+        const log = Array.isArray(data.auditLog) ? data.auditLog : [];
+        const matchingRecord = getLatestWarningRecord(log, targetUrl);
+
+        if (matchingRecord) {
+          const scorePct = Math.round((matchingRecord.score || 0) * 100);
+          const tierStr = matchingRecord.tier || 'HIGH';
+          scoreBadgeEl.textContent = `Score: ${scorePct}% (${tierStr} RISK)`;
+
+          const mitreVal = matchingRecord.mitreTechnique || matchingRecord.mitre;
+          if (mitreVal) {
+            mitreBadgeEl.style.display = 'inline-block';
+            mitreBadgeEl.textContent = `MITRE: ${mitreVal}`;
+          } else {
+            mitreBadgeEl.style.display = 'none';
+            mitreBadgeEl.textContent = '';
+          }
+
+          // Remove the hardcoded placeholder and render all findings
+          reasonsListEl.innerHTML = '';
+          if (Array.isArray(matchingRecord.reasons) && matchingRecord.reasons.length > 0) {
+            matchingRecord.reasons.forEach(reason => {
+              const li = document.createElement('li');
+              li.textContent = reason;
+              reasonsListEl.appendChild(li);
+            });
+          } else {
+            const li = document.createElement('li');
+            li.textContent = 'High risk indicators detected on this destination.';
+            reasonsListEl.appendChild(li);
+          }
+        }
+      } catch (err) {
+        console.error('[WebShield Warning] Error loading audit details:', err);
       }
     }
-  } catch (err) {
-    console.error('[WebShield Warning] Error loading audit details:', err);
-  }
+
+    await loadAndRenderRecord();
+
+    // Re-render when storage auditLog changes
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.onChanged) {
+      chrome.storage.onChanged.addListener((changes, areaName) => {
+        if (areaName === 'local' && changes.auditLog) {
+          loadAndRenderRecord();
+        }
+      });
+    }
 
   // 1. Go Back Button (Recommended)
   btnBack.addEventListener('click', () => {
@@ -110,3 +152,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 });
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { getLatestWarningRecord };
+}
+

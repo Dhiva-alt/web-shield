@@ -365,6 +365,57 @@ runTest('Bug 10: Deduplicates alert on URL + tier + score + reasons within 5-sec
   assert.strictEqual(riskEngine.isDuplicateAlert(null, existingLog, 5000), false);
 });
 
+// Warning Page Data Source Consistency Test
+runTest('Warning page data source returns same score, tier, and MITRE as latest audit log entry', () => {
+  const warningController = require('../extension/warning.js');
+  assert.ok(typeof warningController.getLatestWarningRecord === 'function', 'getLatestWarningRecord must be a function');
+
+  const targetUrl = 'http://localhost:8080/tests/pages/cross_origin_form.html';
+
+  // Audit log with an initial navigation-start entry followed by the final combined DOM-finding entry
+  const mockAuditLog = [
+    {
+      timestamp: '2026-11-10T12:00:00.000Z',
+      url: targetUrl,
+      score: 0.06,
+      tier: 'LOW',
+      reasons: [],
+      mitre: null,
+      mitreTechnique: null
+    },
+    {
+      timestamp: '2026-11-10T12:00:01.000Z',
+      url: targetUrl,
+      score: 0.70,
+      tier: 'HIGH',
+      reasons: [
+        'Override: Cross-domain password submission detected (forces HIGH risk tier)',
+        '[DOM] Password form action submits to a different domain (attacker-harvest.example.org) than current page (localhost)'
+      ],
+      mitre: 'T1056.003: Web Portal Capture',
+      mitreTechnique: 'T1056.003: Web Portal Capture'
+    }
+  ];
+
+  // 1. Query via warning page data source
+  const warningRecord = warningController.getLatestWarningRecord(mockAuditLog, targetUrl);
+  assert.ok(warningRecord, 'Warning page must find a matching record');
+
+  // 2. Query via popup data source (source of truth: auditLog.slice().reverse().find)
+  const popupRecord = mockAuditLog.slice().reverse().find(entry => entry.url === targetUrl);
+
+  // 3. Verify warning page returns the final evaluation record rather than the stale 6% record
+  assert.strictEqual(warningRecord.score, 0.70, 'Warning record must show final 70% score, not initial 6%');
+  assert.strictEqual(warningRecord.tier, 'HIGH', 'Warning record must show HIGH tier');
+  assert.strictEqual(warningRecord.mitreTechnique, 'T1056.003: Web Portal Capture', 'Warning record must show correct MITRE tag');
+  assert.strictEqual(warningRecord.reasons.length, 2, 'Warning record must include all findings');
+
+  // 4. Verify exact parity between warning page and popup records
+  assert.strictEqual(warningRecord.score, popupRecord.score, 'Warning and popup scores must match');
+  assert.strictEqual(warningRecord.tier, popupRecord.tier, 'Warning and popup tiers must match');
+  assert.strictEqual(warningRecord.mitreTechnique, popupRecord.mitreTechnique, 'Warning and popup MITRE techniques must match');
+});
+
 console.log('\n============================================================');
 console.log(` Results: ${passedTests}/${totalTests} tests passed.`);
 console.log('============================================================\n');
