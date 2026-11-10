@@ -21,34 +21,34 @@ Phishing and deceptive links remain the primary initial access vector across mod
 
 ```mermaid
 flowchart TD
-    subgraph Browser Navigation
-        A[Navigation Commit / URL Event] --> B[URL Parser & Normalizer]
+    subgraph Nav["Browser Navigation"]
+        A["Navigation Commit / URL Event"] --> B["URL Parser & Normalizer"]
     end
 
-    subgraph Parallel Local Engines
-        B --> C[Lexical & Heuristic Engine<br/><code>features.js</code> & <code>rules.js</code>]
-        B --> D[Offline Random Forest Engine<br/><code>model.js</code> + <code>rf_model.json</code>]
-        A --> E[Security Headers Inspector<br/><code>headers.js</code> (Read-Only)]
-        A --> F[Content Script DOM Scanner<br/><code>content.js</code> (Structural Only)]
+    subgraph Engines["Parallel Local Engines"]
+        B --> C["Lexical & Heuristic Engine<br/>features.js & rules.js"]
+        B --> D["Offline Random Forest Engine<br/>model.js + rf_model.json"]
+        A --> E["Security Headers Inspector<br/>headers.js (Read-Only)"]
+        A --> F["Content Script DOM Scanner<br/>content.js (Structural Only)"]
     end
 
-    subgraph Decision & Audit
-        C --> G[Unified Risk Engine<br/><code>risk_engine.js</code> & <code>config.js</code>]
+    subgraph Decision["Decision & Audit"]
+        C --> G["Unified Risk Engine<br/>risk_engine.js & config.js"]
         D --> G
         E --> G
         F --> G
-        H[User Site Allowlist<br/><code>chrome.storage.local</code>] --> G
-        G --> I[Audit Log<br/>Capped at 500 Entries]
+        H["User Site Allowlist<br/>chrome.storage.local"] --> G
+        G --> I["Audit Log<br/>Capped at 500 Entries"]
     end
 
-    subgraph Tiered Actions
-        G -->|Score < 0.40| J[LOW Tier: Log Only]
-        G -->|0.40 <= Score < 0.70| K[MEDIUM Tier: Badge + Notification]
-        G -->|Score >= 0.70 or Critical DOM| L[HIGH Tier: Warning Redirect<br/><code>warning.html</code>]
+    subgraph Actions["Tiered Actions"]
+        G -->|"Score < 0.40"| J["LOW Tier: Log Only"]
+        G -->|"0.40 <= Score < 0.70"| K["MEDIUM Tier: Badge + Notification"]
+        G -->|"Score >= 0.70 or Critical DOM"| L["HIGH Tier: Warning Redirect<br/>warning.html"]
     end
 
-    subgraph SIEM Integration
-        I --> M[JSON Lines Export<br/><code>.jsonl</code> for Wazuh / Splunk]
+    subgraph SIEM["SIEM Integration"]
+        I --> M["JSON Lines Export<br/>.jsonl for Wazuh / Splunk"]
     end
 ```
 
